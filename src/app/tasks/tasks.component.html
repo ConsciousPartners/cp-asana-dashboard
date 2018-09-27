@@ -1,0 +1,19 @@
+<table class="table" style="width: 100%;">
+  <thead>
+    <tr>
+      <th>Completed Milestones</th>
+      <th *ngFor='let t of calendarDays'>{{ t.day }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <span class="task-count alert" [ngClass]="{
+          'alert-success': tasksIncomplete.length === 0,
+          'alert-danger': tasksIncomplete.length !== 0
+        }">{{ tasksCompleted.length }}</span>
+      </td>
+      <td *ngFor='let t of calendarDays'>{{ (t.taskCount > 0 ? t.taskCount : '&nbsp;') }}</td>
+    </tr>
+  </tbody>
+</table>
