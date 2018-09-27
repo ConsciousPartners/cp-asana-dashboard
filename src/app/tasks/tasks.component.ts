@@ -14,7 +14,7 @@ export class TasksComponent implements OnInit {
   tasksCompleted = [];
   tasksIncomplete = [];
   tasksAll = [];
-  tasks: ITasks[] = [];
+  tasks = <any>{};
 
   isComplete = false;
   calendarDays = [];
