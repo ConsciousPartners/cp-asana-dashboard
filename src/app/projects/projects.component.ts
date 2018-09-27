@@ -11,10 +11,10 @@ import { IProjects } from './projects';
 export class ProjectsComponent implements OnInit {
 
   interval;
-  projects: IProjects[] = [];
+  projects: IProjects[];
   constructor(private _projectsService: ProjectsService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     if (typeof this.interval === 'undefined') {
       this.checkUpdates();
     }
@@ -23,9 +23,8 @@ export class ProjectsComponent implements OnInit {
     }, 1000 * 60);
   }
 
-  checkUpdates() {
-    this._projectsService.getProjects().subscribe(data => {
-      this.projects = data.data;
-    });
+  checkUpdates(): void {
+    this._projectsService.getProjects()
+    .subscribe(projects => this.projects = projects);
   }
 }

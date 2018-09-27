@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, ReplaySubject, from, of, range } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { IProjects } from './projects';
@@ -24,7 +24,10 @@ export class ProjectsService {
   constructor(private _http: HttpClient) { }
 
   getProjects(): Observable<IProjects[]> {
-    return this._http.get<IProjects[]>(this._asanaBaseUrl + this._asanaUrl, this.httpOptions);
+    return this._http.get<IProjects[]>(this._asanaBaseUrl + this._asanaUrl, this.httpOptions)
+    .pipe(
+      tap(projects => console.log('Fetched projects'))
+    );
   }
 
   private handleError(err: HttpErrorResponse) {

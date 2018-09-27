@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, ReplaySubject, from, of, range } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { ITasks } from './tasks';
@@ -25,7 +25,10 @@ export class TasksService {
   constructor(private _http: HttpClient) { }
 
   getTasks(projectId): Observable<ITasks[]> {
-    return this._http.get<ITasks[]>(this._asanaBaseUrl + projectId + this._asanaUrl, this.httpOptions);
+    return this._http.get<ITasks[]>(this._asanaBaseUrl + projectId + this._asanaUrl, this.httpOptions)
+    .pipe(
+      tap(tasks => console.log('Fetched tasks'))
+    );
   }
 
   private handleError(err: HttpErrorResponse) {

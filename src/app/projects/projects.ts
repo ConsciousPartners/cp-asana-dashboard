@@ -1,4 +1,5 @@
-export interface IProjects {
+export class IProjects {
   id: string;
   name: string;
+  data: any;
 }

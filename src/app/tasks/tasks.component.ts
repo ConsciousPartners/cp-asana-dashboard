@@ -11,28 +11,41 @@ import { ITasks } from './tasks';
 export class TasksComponent implements OnInit {
   @Input() projectId: string;
 
-  tasksCompleted: ITasks[] = [];
-  tasksIncomplete: ITasks[] = [];
-  tasksAll: ITasks[] = [];
+  tasksCompleted = [];
+  tasksIncomplete = [];
+  tasksAll = [];
+  tasks: ITasks[] = [];
+
   isComplete = false;
   calendarDays = [];
   constructor(private _tasksService: TasksService) { }
 
   ngOnInit() {
-    this._tasksService.getTasks(this.projectId).subscribe(data => {
-      data.data.forEach(element => {
-        const d = new Date(element.due_on);
-        element.day = d.getDate();
-        element.month = d.getMonth() + 1;
-        element.year = d.getFullYear();
-      });
-      this.tasksCompleted = data.data.filter(task => task.completed === true);
-      this.tasksIncomplete = data.data.filter(task => task.completed === false);
-      this.tasksAll = data.data;
-      this.isComplete = (this.tasksIncomplete.length === 0) ? true : false;
-      this.prepareDates();
-    });
+    this.fetchTasks();
+  }
 
+  fetchTasks(): void {
+    this._tasksService.getTasks(this.projectId).subscribe(
+      tasks => this.tasks = tasks,
+      err => {
+        console.log(err);
+      },
+      () => {
+        if (this.tasks.hasOwnProperty('data')) {
+          this.tasks.data.forEach(element => {
+            const d = new Date(element.due_on);
+            element.day = d.getDate();
+            element.month = d.getMonth() + 1;
+            element.year = d.getFullYear();
+          });
+          this.tasksCompleted = this.tasks.data.filter(task => task.completed === true);
+          this.tasksIncomplete = this.tasks.data.filter(task => task.completed === false);
+          this.tasksAll = this.tasks.data;
+          this.isComplete = (this.tasksIncomplete.length === 0) ? true : false;
+          this.prepareDates();
+        }
+      }
+    );
   }
 
   prepareDates() {
@@ -46,7 +59,6 @@ export class TasksComponent implements OnInit {
       const dateNow = d.getDate();
       const monthNow =  d.getMonth() + 1;
       const yearNow = d.getFullYear();
-      console.log();
 
       this.calendarDays.push({ day : dateNow.toString(), taskCount : this.tasksAll.filter(task => 
         (task.day === dateNow && task.month === monthNow && task.year === yearNow)).length });

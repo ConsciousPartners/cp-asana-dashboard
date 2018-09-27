@@ -7,8 +7,8 @@
         <th>&nbsp;</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor='let project of projects'>
+    <tbody *ngIf="projects">
+      <tr *ngFor='let project of projects.data'>
         <td>{{ project.name }}</td>
         <td>{{ project.owner.name }}</td>
         <td [projectId]='project.id' app-tasks width="5"></td>
