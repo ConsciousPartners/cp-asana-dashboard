@@ -10,3 +10,17 @@ table td .alert {
 table td.no-wrap {
   white-space: nowrap;
 }
+
+table td img {
+  display: block;
+  margin: 0 auto;
+}
+
+table td span.task-day-count {
+  width: 22px;
+  display: block;
+}
+
+table td.is-weekend {
+  background-color: rgba(212, 212, 212, 0.26);
+}

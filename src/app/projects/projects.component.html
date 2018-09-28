@@ -5,20 +5,24 @@
         <th>Project</th>
         <th>Leader</th>
         <th>Completed Milestones</th>
-        <th *ngFor='let t of calendarDays'>{{ t.day }}</th>
+        <th class="text-center" *ngFor='let t of calendarDays'>{{ t.day }}</th>
       </tr>
     </thead>
     <tbody *ngIf="projects">
       <tr *ngFor='let project of projects.data'>
         <td class="no-wrap">{{ project.name }}</td>
         <td><img src="{{ project.owner.photo.image_27x27 }}" alt=""></td>
-        <td>
+        <td class="text-center">
           <span *ngIf="project.tasksCompleted" class="task-count alert" [ngClass]="{
-            'alert-success': project.tasksIncomplete.length === 0,
-            'alert-danger': project.tasksIncomplete.length !== 0
+            'alert-success': project.isComplete,
+            'alert-danger': !project.isComplete
           }">{{ project.tasksCompleted.length }}</span>
         </td>
-        <td *ngFor='let t of project.calendarDays'>{{ (t.taskCount > 0 ? t.taskCount : '&nbsp;') }}</td>
+        <td class="text-center" *ngFor='let t of project.calendarDays'
+          [ngClass]="{
+            'is-weekend' : t.isWeekend
+          }"
+        ><span class="task-day-count">{{ (t.taskCount > 0 ? t.taskCount : '&nbsp;') }}</span></td>
       </tr>
     </tbody>
   </table>

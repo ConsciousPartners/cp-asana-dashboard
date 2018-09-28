@@ -52,17 +52,33 @@ export class ProjectsComponent implements OnInit {
                 console.log(err);
               },
               () => {
+                  const today = new Date();
+                  const yesterday = new Date(today);
+                  yesterday.setDate(today.getDate() - 1);
+
                   this.tasks.data.forEach(element => {
                     const d = new Date(element.due_on);
                     element.day = d.getDate();
                     element.month = d.getMonth() + 1;
                     element.year = d.getFullYear();
                   });
+                  const tasksCompletedSinceYesterday = [];
 
                   this.projects.data[index].tasksCompleted = this.tasks.data.filter(task => task.completed === true);
                   this.projects.data[index].tasksIncomplete = this.tasks.data.filter(task => task.completed === false);
                   this.projects.data[index].tasksAll = this.tasks.data;
-                  this.projects.data[index].isComplete = (this.projects.data[index].tasksIncomplete.length === 0) ? true : false;
+                  this.tasks.data.filter(task => {
+                    const due = new Date(task.due_on);
+                    if (due <= yesterday && task.completed === true) {
+                      tasksCompletedSinceYesterday.push(task);
+                    }
+                  });
+
+                  const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
+                  const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
+                  const taskComplated = taskCompletedSize >= tasksCompletedSinceYesterday.length;
+
+                  this.projects.data[index].isComplete = taskComplated && !zeroTasks ? true : false;
                   this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll);
               }
             );
@@ -90,7 +106,7 @@ export class ProjectsComponent implements OnInit {
       taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow)).length;
       currentSum = taskCount + currentSum;
 
-      calendarDays.push({ day : dateNow.toString(), taskCount : (taskCount > 0) ? currentSum : '' });
+      calendarDays.push({ day : dateNow.toString(), taskCount : currentSum, isWeekend : (d.getDay() === 6 || d.getDay() === 0) });
     }
 
     return calendarDays;
