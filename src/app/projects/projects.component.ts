@@ -73,13 +73,20 @@ export class ProjectsComponent implements OnInit {
                       tasksCompletedSinceYesterday.push(task);
                     }
                   });
+                  let maxDue = new Date();
+                  this.tasks.data.filter(task => {
+                    const due = new Date(task.due_on);
+                    if (due >= maxDue) {
+                      maxDue = due;
+                    }
+                  });
 
                   const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
                   const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
                   const taskComplated = taskCompletedSize >= tasksCompletedSinceYesterday.length;
 
                   this.projects.data[index].isComplete = taskComplated && !zeroTasks ? true : false;
-                  this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll);
+                  this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxDue);
               }
             );
 
@@ -88,7 +95,8 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  prepareTaskCountByDate(taskAll) {
+  prepareTaskCountByDate(taskAll, maxDue) {
+    maxDue.setHours(0, 0, 0, 0);
     const today = new Date();
     const yesterday = new Date(today);
     const threeMonths = new Date(today);
@@ -98,17 +106,24 @@ export class ProjectsComponent implements OnInit {
     threeMonths.setDate(today.getDate() + 90);
 
     for (const d = yesterday; d <= threeMonths; d.setDate(d.getDate() + 1)) {
+      d.setHours(0, 0, 0, 0);
       const dateNow = d.getDate();
       const monthNow =  d.getMonth() + 1;
       const yearNow = d.getFullYear();
       let taskCount;
 
-      taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow)).length;
-      currentSum = taskCount + currentSum;
+      const taskCountShow = (d <= maxDue) ? true : false;
 
-      calendarDays.push({ day : dateNow.toString(), taskCount : currentSum, isWeekend : (d.getDay() === 6 || d.getDay() === 0) });
+      taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
+      currentSum = taskCount.length + currentSum;
+
+      calendarDays.push({
+        day : dateNow.toString(),
+        taskCount : currentSum,
+        isWeekend : (d.getDay() === 6 || d.getDay() === 0),
+        show: taskCountShow
+      });
     }
-
     return calendarDays;
   }
 

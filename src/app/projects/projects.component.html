@@ -22,7 +22,7 @@
           [ngClass]="{
             'is-weekend' : t.isWeekend
           }"
-        ><span class="task-day-count">{{ (t.taskCount > 0 ? t.taskCount : '&nbsp;') }}</span></td>
+        ><span class="task-day-count"><span *ngIf="t.show">{{ (t.taskCount > 0 ? t.taskCount : '&nbsp;') }}</span></span></td>
       </tr>
     </tbody>
   </table>
