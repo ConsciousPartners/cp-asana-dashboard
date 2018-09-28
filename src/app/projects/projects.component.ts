@@ -80,7 +80,6 @@ export class ProjectsComponent implements OnInit {
     let currentSum = 0;
     yesterday.setDate(today.getDate() - 1);
     threeMonths.setDate(today.getDate() + 90);
-    console.log(taskAll);
 
     for (const d = yesterday; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       const dateNow = d.getDate();
