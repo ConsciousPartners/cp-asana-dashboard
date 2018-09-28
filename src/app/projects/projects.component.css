@@ -2,3 +2,11 @@
   padding: .5rem;
   vertical-align: middle;
 }
+
+table td .alert {
+  padding: 8px;  
+}
+
+table td.no-wrap {
+  white-space: nowrap;
+}
