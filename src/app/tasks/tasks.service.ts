@@ -27,7 +27,7 @@ export class TasksService {
   getTasks(projectId): Observable<ITasks[]> {
     return this._http.get<ITasks[]>(this._asanaBaseUrl + projectId + this._asanaUrl, this.httpOptions)
     .pipe(
-      tap(tasks => console.log('Fetched tasks'))
+      tap(tasks => {})
     );
   }
 

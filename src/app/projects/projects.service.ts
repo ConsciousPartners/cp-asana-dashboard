@@ -26,7 +26,7 @@ export class ProjectsService {
   getProjects(): Observable<IProjects[]> {
     return this._http.get<IProjects[]>(this._asanaBaseUrl + this._asanaUrl, this.httpOptions)
     .pipe(
-      tap(projects => console.log('Fetched projects'))
+      tap(projects => {})
     );
   }
 
