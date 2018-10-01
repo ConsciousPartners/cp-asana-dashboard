@@ -1,5 +1,5 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/api/vendor/autoload.php';
 use App\Model\Projects;
 
 $dotenv = new \Dotenv\Dotenv($_SERVER['DOCUMENT_ROOT']);
