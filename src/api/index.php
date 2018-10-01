@@ -2,7 +2,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/api/vendor/autoload.php';
 use App\Model\Projects;
 
-$dotenv = new \Dotenv\Dotenv($_SERVER['DOCUMENT_ROOT']);
+$dotenv = new \Dotenv\Dotenv($_SERVER['DOCUMENT_ROOT'] . '/api');
 $dotenv->load();
 
 //$app = new Slim\App();

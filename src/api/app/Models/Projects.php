@@ -1,6 +1,6 @@
 <?php namespace App\Model;
 use GuzzleHttp\Client;
-$dotenv = new \Dotenv\Dotenv($_SERVER['DOCUMENT_ROOT']);
+$dotenv = new \Dotenv\Dotenv($_SERVER['DOCUMENT_ROOT'] . '/api');
 $dotenv->load();
 
 class Projects {
