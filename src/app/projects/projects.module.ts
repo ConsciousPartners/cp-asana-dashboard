@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { ProjectsService } from './projects.service';
 import { ProjectsComponent } from './projects.component';
-import { TasksModule } from './../tasks/tasks.module';
 
 @NgModule({
   imports: [
-    CommonModule,
-    TasksModule
+    CommonModule
   ],
   declarations: [
     ProjectsComponent

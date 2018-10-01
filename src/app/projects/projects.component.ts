@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ProjectsService } from './projects.service';
-import { TasksService } from './../tasks/tasks.service';
 import { IProjects } from './projects';
 
 @Component({
@@ -23,11 +22,9 @@ export class ProjectsComponent implements OnInit {
 
   isComplete = false;
 
-  constructor(private _projectsService: ProjectsService, private _tasksService: TasksService) { }
+  constructor(private _projectsService: ProjectsService) { }
 
   ngOnInit() {
-    this.prepareDatesHeader();
-
     if (typeof this.interval === 'undefined') {
       this.checkUpdates();
     }
@@ -44,68 +41,64 @@ export class ProjectsComponent implements OnInit {
         console.log(err);
       },
       () => {
+        const allTasks = [];
         if (this.projects.hasOwnProperty('data')) {
-          this.projects.data.forEach((data, index) => {
-            this._tasksService.getTasks(data.id).subscribe(
-              tasks => this.tasks = tasks,
-              err => {
-                console.log(err);
-              },
-              () => {
-                  const today = new Date();
-                  const yesterday = new Date(today);
-                  yesterday.setDate(today.getDate() - 1);
+          this.projects.data.forEach((project, index) => {
 
-                  this.tasks.data.forEach(element => {
-                    const d = new Date(element.due_on);
-                    element.day = d.getDate();
-                    element.month = d.getMonth() + 1;
-                    element.year = d.getFullYear();
-                  });
-                  const tasksCompletedSinceYesterday = [];
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            yesterday.setHours(0, 0, 0, 0);
 
-                  this.projects.data[index].tasksCompleted = this.tasks.data.filter(task => task.completed === true);
-                  this.projects.data[index].tasksIncomplete = this.tasks.data.filter(task => task.completed === false);
-                  this.projects.data[index].tasksAll = this.tasks.data;
-                  this.tasks.data.filter(task => {
-                    const due = new Date(task.due_on);
-                    if (due <= yesterday && task.completed === true) {
-                      tasksCompletedSinceYesterday.push(task);
-                    }
-                  });
-                  let maxDue = new Date();
-                  this.tasks.data.filter(task => {
-                    const due = new Date(task.due_on);
-                    if (due >= maxDue) {
-                      maxDue = due;
-                    }
-                  });
+            project.tasks.data.forEach(element => {
+              const d = new Date(element.due_on);
+              element.day = d.getDate();
+              element.month = d.getMonth() + 1;
+              element.year = d.getFullYear();
+            });
+            const tasksCompletedSinceYesterday = [];
 
-                  const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
-                  const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
-                  const taskComplated = taskCompletedSize >= tasksCompletedSinceYesterday.length;
+            this.projects.data[index].tasksCompleted = project.tasks.data.filter(task => task.completed === true);
+            this.projects.data[index].tasksIncomplete = project.tasks.data.filter(task => task.completed === false);
+            this.projects.data[index].tasksAll = project.tasks.data;
 
-                  this.projects.data[index].isComplete = taskComplated && !zeroTasks ? true : false;
-                  this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxDue);
+            project.tasks.data.filter(task => {
+              const due = new Date(task.due_on);
+              due.setHours(0, 0, 0, 0);
+              if (due <= yesterday && task.completed === false) {
+                tasksCompletedSinceYesterday.push(task);
               }
-            );
+            });
 
+            this.projects.data[index].tasksCompletedSinceYesterday = tasksCompletedSinceYesterday;
+
+            const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
+            const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
+            const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
+
+            this.projects.data[index].isComplete = taskCompleted && !zeroTasks ? true : false;
+            this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll);
+            this.prepareDatesHeader();
           });
         }
     });
+
   }
 
-  prepareTaskCountByDate(taskAll, maxDue) {
+  prepareTaskCountByDate(taskAll) {
+    const maxDue = new Date(this.projects.maximumDue);
+    const minDue = new Date(this.projects.minimumDue);
     maxDue.setHours(0, 0, 0, 0);
+    minDue.setHours(0, 0, 0, 0);
+
     const today = new Date();
-    const yesterday = new Date(today);
+    const minDueDate = new Date(minDue);
     const threeMonths = new Date(today);
     const calendarDays = [];
     let currentSum = 0;
-    yesterday.setDate(today.getDate() - 1);
     threeMonths.setDate(today.getDate() + 90);
 
-    for (const d = yesterday; d <= threeMonths; d.setDate(d.getDate() + 1)) {
+    for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       d.setHours(0, 0, 0, 0);
       const dateNow = d.getDate();
       const monthNow =  d.getMonth() + 1;
@@ -128,13 +121,17 @@ export class ProjectsComponent implements OnInit {
   }
 
   prepareDatesHeader() {
+    const maxDue = new Date(this.projects.maximumDue);
+    const minDue = new Date(this.projects.minimumDue);
+    maxDue.setHours(0, 0, 0, 0);
+    minDue.setHours(0, 0, 0, 0);
+
     const today = new Date();
-    const yesterday = new Date(today);
+    const minDueDate = new Date(minDue);
     const threeMonths = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
     threeMonths.setDate(today.getDate() + 90);
 
-    for (const d = yesterday; d <= threeMonths; d.setDate(d.getDate() + 1)) {
+    for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       const dateNow = d.getDate();
       const monthNow =  d.getMonth() + 1;
       const yearNow = d.getFullYear();

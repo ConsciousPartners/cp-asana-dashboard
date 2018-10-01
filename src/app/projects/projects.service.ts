@@ -18,13 +18,12 @@ export class ProjectsService {
     })
   };
 
-  private _asanaBaseUrl = 'https://app.asana.com/api/1.0';
-  private _asanaUrl = '/teams/' + environment.teamId + '/projects?opt_expand=owner&limit=100&archived=false';
+  private _url = '/api/projects';
 
   constructor(private _http: HttpClient) { }
 
-  getProjects(): Observable<IProjects[]> {
-    return this._http.get<IProjects[]>(this._asanaBaseUrl + this._asanaUrl, this.httpOptions)
+  getProjects() {
+    return this._http.get(this._url)
     .pipe(
       tap(projects => {})
     );
