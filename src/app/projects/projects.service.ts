@@ -19,7 +19,7 @@ export class ProjectsService {
   };
 
   private _asanaBaseUrl = 'https://app.asana.com/api/1.0';
-  private _asanaUrl = '/teams/' + environment.teamId + '/projects?opt_expand=owner&limit=100';
+  private _asanaUrl = '/teams/' + environment.teamId + '/projects?opt_expand=owner&limit=100&archived=false';
 
   constructor(private _http: HttpClient) { }
 
