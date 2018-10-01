@@ -18,7 +18,7 @@ export class ProjectsService {
     })
   };
 
-  private _url = '/api/projects';
+  private _url = 'http://pm.local/api/projects';
 
   constructor(private _http: HttpClient) { }
 

@@ -78,8 +78,8 @@ export class ProjectsComponent implements OnInit {
 
             this.projects.data[index].isComplete = taskCompleted && !zeroTasks ? true : false;
             this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll);
-            this.prepareDatesHeader();
           });
+          this.prepareDatesHeader();
         }
     });
 
@@ -93,10 +93,10 @@ export class ProjectsComponent implements OnInit {
 
     const today = new Date();
     const minDueDate = new Date(minDue);
-    const threeMonths = new Date(today);
+    const threeMonths = new Date(minDueDate);
     const calendarDays = [];
     let currentSum = 0;
-    threeMonths.setDate(today.getDate() + 90);
+    threeMonths.setDate(minDueDate.getDate() + 90);
 
     for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       d.setHours(0, 0, 0, 0);
@@ -128,8 +128,8 @@ export class ProjectsComponent implements OnInit {
 
     const today = new Date();
     const minDueDate = new Date(minDue);
-    const threeMonths = new Date(today);
-    threeMonths.setDate(today.getDate() + 90);
+    const threeMonths = new Date(minDueDate);
+    threeMonths.setDate(minDueDate.getDate() + 90);
 
     for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       const dateNow = d.getDate();
