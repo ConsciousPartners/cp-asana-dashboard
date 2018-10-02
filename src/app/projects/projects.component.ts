@@ -55,7 +55,8 @@ export class ProjectsComponent implements OnInit {
             maxTaskDue.setHours(0, 0, 0, 0);
 
             project.tasks.data.forEach(element => {
-              const d = new Date(element.due_on);
+              const d = moment(element.due_on).toDate();
+
               d.setHours(0, 0, 0, 0);
               element.day = d.getDate();
               element.month = d.getMonth() + 1;
@@ -87,7 +88,6 @@ export class ProjectsComponent implements OnInit {
             const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
             const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
             const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
-            const ty = tasksCompletedSinceYesterday.length;
 
             this.projects.data[index].isComplete = (taskCompleted && !zeroTasks) || zeroTasks ? true : false;
             this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxTaskDue);
@@ -122,11 +122,12 @@ export class ProjectsComponent implements OnInit {
 
       const taskCountShow = (d <= maxTaxDue) ? true : false;
 
-      taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
-      currentSum = taskCount.length + currentSum;
       const dMoment = moment(d).format('YYYY/MM/DD');
 
       if (dMoment >= pstTime) {
+        taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
+        currentSum = taskCount.length + currentSum;
+
         calendarDays.push({
           day : dateNow.toString(),
           taskCount : currentSum,
