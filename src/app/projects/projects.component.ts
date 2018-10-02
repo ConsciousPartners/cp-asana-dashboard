@@ -49,15 +49,23 @@ export class ProjectsComponent implements OnInit {
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
             yesterday.setHours(0, 0, 0, 0);
+            let maxTaskDue = new Date();
+            maxTaskDue.setHours(0, 0, 0, 0);
 
             project.tasks.data.forEach(element => {
               const d = new Date(element.due_on);
+              d.setHours(0, 0, 0, 0);
               element.day = d.getDate();
               element.month = d.getMonth() + 1;
               element.year = d.getFullYear();
+
+              if (d > maxTaskDue) {
+                maxTaskDue = d;
+              }
             });
             const tasksCompletedSinceYesterday = [];
 
+            this.projects.data[index].maxTaskDue = maxTaskDue;
             this.projects.data[index].tasksCompleted = project.tasks.data.filter(task => task.completed === true);
             this.projects.data[index].tasksIncomplete = project.tasks.data.filter(task => task.completed === false);
             this.projects.data[index].tasksAll = project.tasks.data;
@@ -77,7 +85,7 @@ export class ProjectsComponent implements OnInit {
             const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
 
             this.projects.data[index].isComplete = taskCompleted && !zeroTasks ? true : false;
-            this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll);
+            this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxTaskDue);
           });
           this.prepareDatesHeader();
         }
@@ -85,7 +93,7 @@ export class ProjectsComponent implements OnInit {
 
   }
 
-  prepareTaskCountByDate(taskAll) {
+  prepareTaskCountByDate(taskAll, maxTaxDue) {
     const maxDue = new Date(this.projects.maximumDue);
     const minDue = new Date(this.projects.minimumDue);
     maxDue.setHours(0, 0, 0, 0);
@@ -105,7 +113,7 @@ export class ProjectsComponent implements OnInit {
       const yearNow = d.getFullYear();
       let taskCount;
 
-      const taskCountShow = (d <= maxDue) ? true : false;
+      const taskCountShow = (d <= maxTaxDue) ? true : false;
 
       taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
       currentSum = taskCount.length + currentSum;
