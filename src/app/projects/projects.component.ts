@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { ProjectsService } from './projects.service';
 import { IProjects } from './projects';
+import * as moment from 'moment';
+import * as momentTz from 'moment-timezone';
 
 @Component({
   selector: 'app-projects',
@@ -71,10 +73,12 @@ export class ProjectsComponent implements OnInit {
             this.projects.data[index].tasksAll = project.tasks.data;
 
             project.tasks.data.filter(task => {
-              const due = new Date(task.due_on);
-              due.setHours(0, 0, 0, 0);
-              if (due <= yesterday && task.completed === false) {
-                tasksCompletedSinceYesterday.push(task);
+              if (task.due_on !== null) {
+                const due = new Date(task.due_on);
+                due.setHours(0, 0, 0, 0);
+                if (due <= yesterday && task.completed === false) {
+                  tasksCompletedSinceYesterday.push(task);
+                }
               }
             });
 
@@ -83,8 +87,9 @@ export class ProjectsComponent implements OnInit {
             const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
             const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
             const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
+            const ty = tasksCompletedSinceYesterday.length;
 
-            this.projects.data[index].isComplete = taskCompleted && !zeroTasks ? true : false;
+            this.projects.data[index].isComplete = (taskCompleted && !zeroTasks) || zeroTasks ? true : false;
             this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxTaskDue);
           });
           this.prepareDatesHeader();
@@ -102,6 +107,8 @@ export class ProjectsComponent implements OnInit {
     const today = new Date();
     const minDueDate = new Date(minDue);
     const threeMonths = new Date(minDueDate);
+
+    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days').format('YYYY/MM/DD');
     const calendarDays = [];
     let currentSum = 0;
     threeMonths.setDate(minDueDate.getDate() + 90);
@@ -117,18 +124,22 @@ export class ProjectsComponent implements OnInit {
 
       taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
       currentSum = taskCount.length + currentSum;
+      const dMoment = moment(d).format('YYYY/MM/DD');
 
-      calendarDays.push({
-        day : dateNow.toString(),
-        taskCount : currentSum,
-        isWeekend : (d.getDay() === 6 || d.getDay() === 0),
-        show: taskCountShow
-      });
+      if (dMoment >= pstTime) {
+        calendarDays.push({
+          day : dateNow.toString(),
+          taskCount : currentSum,
+          isWeekend : (d.getDay() === 6 || d.getDay() === 0),
+          show: taskCountShow
+        });
+      }
     }
     return calendarDays;
   }
 
   prepareDatesHeader() {
+    this.calendarDays = [];
     const maxDue = new Date(this.projects.maximumDue);
     const minDue = new Date(this.projects.minimumDue);
     maxDue.setHours(0, 0, 0, 0);
@@ -138,13 +149,16 @@ export class ProjectsComponent implements OnInit {
     const minDueDate = new Date(minDue);
     const threeMonths = new Date(minDueDate);
     threeMonths.setDate(minDueDate.getDate() + 90);
-
+    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days').format('YYYY/MM/DD');
     for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
+      const dMoment = moment(d).format('YYYY/MM/DD');
       const dateNow = d.getDate();
       const monthNow =  d.getMonth() + 1;
       const yearNow = d.getFullYear();
 
-      this.calendarDays.push({ day : dateNow.toString() });
+      if (dMoment >= pstTime) {
+        this.calendarDays.push({ day : dateNow.toString() });
+      }
     }
   }
 }
