@@ -48,8 +48,8 @@ export class ProjectsComponent implements OnInit {
           this.projects.data.forEach((project, index) => {
 
             const today = new Date();
-            const yesterday = new Date(today);
-            yesterday.setDate(today.getDate() - 1);
+            const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
+            const yesterday = moment(pstTime.toDate()).subtract(1, 'days').toDate();
             yesterday.setHours(0, 0, 0, 0);
             let maxTaskDue = new Date();
             maxTaskDue.setHours(0, 0, 0, 0);
@@ -75,7 +75,7 @@ export class ProjectsComponent implements OnInit {
 
             project.tasks.data.filter(task => {
               if (task.due_on !== null) {
-                const due = new Date(task.due_on);
+                const due = moment(task.due_on).toDate();
                 due.setHours(0, 0, 0, 0);
                 if (due <= yesterday && task.completed === false) {
                   tasksCompletedSinceYesterday.push(task);
@@ -87,7 +87,7 @@ export class ProjectsComponent implements OnInit {
 
             const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
             const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
-            const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
+            const taskCompleted = taskCompletedSize >= (tasksCompletedSinceYesterday.length + taskCompletedSize);
 
             this.projects.data[index].isComplete = (taskCompleted && !zeroTasks) || zeroTasks ? true : false;
             this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxTaskDue);
