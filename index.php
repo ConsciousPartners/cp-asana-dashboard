@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/app/Models/Project.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/app/Models/Projects.php';
 use App\Model\Projects;
 use Slim\Views\PhpRenderer;
 
