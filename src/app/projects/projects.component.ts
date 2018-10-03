@@ -49,8 +49,6 @@ export class ProjectsComponent implements OnInit {
 
             const today = new Date();
             const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
-            const yesterday = moment(pstTime.toDate()).subtract(1, 'days').toDate();
-            yesterday.setHours(0, 0, 0, 0);
             let maxTaskDue = new Date();
             maxTaskDue.setHours(0, 0, 0, 0);
 
@@ -77,7 +75,7 @@ export class ProjectsComponent implements OnInit {
               if (task.due_on !== null) {
                 const due = moment(task.due_on).toDate();
                 due.setHours(0, 0, 0, 0);
-                if (due <= yesterday && task.completed === false) {
+                if (moment(due).format('YYYY/MM/DD') === pstTime.format('YYYY/MM/DD')) {
                   tasksCompletedSinceYesterday.push(task);
                 }
               }
@@ -87,7 +85,7 @@ export class ProjectsComponent implements OnInit {
 
             const taskCompletedSize = this.projects.data[index].tasksCompleted.length;
             const zeroTasks = taskCompletedSize === 0 && tasksCompletedSinceYesterday.length === 0;
-            const taskCompleted = taskCompletedSize >= (tasksCompletedSinceYesterday.length + taskCompletedSize);
+            const taskCompleted = taskCompletedSize >= tasksCompletedSinceYesterday.length;
 
             this.projects.data[index].isComplete = (taskCompleted && !zeroTasks) || zeroTasks ? true : false;
             this.projects.data[index].calendarDays = this.prepareTaskCountByDate(this.projects.data[index].tasksAll, maxTaskDue);
@@ -108,7 +106,7 @@ export class ProjectsComponent implements OnInit {
     const minDueDate = new Date(minDue);
     const threeMonths = new Date(minDueDate);
 
-    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days').format('YYYY/MM/DD');
+    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
     const calendarDays = [];
     let currentSum = 0;
     threeMonths.setDate(minDueDate.getDate() + 90);
@@ -124,7 +122,7 @@ export class ProjectsComponent implements OnInit {
 
       const dMoment = moment(d).format('YYYY/MM/DD');
 
-      if (dMoment >= pstTime) {
+      if (dMoment >= pstTime.format('YYYY/MM/DD')) {
         taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
         currentSum = taskCount.length + currentSum;
 
