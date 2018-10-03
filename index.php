@@ -69,7 +69,7 @@ $app->group('/api', function () use ($app) {
 
 });
 
-$app->get('/signup', function ($request, $response, $args) use ($app) {
+$app->get('/signin', function ($request, $response, $args) use ($app) {
   return $response->withRedirect('/');
 });
 
