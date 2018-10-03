@@ -69,6 +69,10 @@ $app->group('/api', function () use ($app) {
 
 });
 
+$app->get('/signup', function ($request, $response, $args) use ($app) {
+  return $response->withRedirect('/');
+});
+
 $app->options('/{routes:.+}', function ($request, $response, $args) {
   return $response;
 });
