@@ -75,7 +75,7 @@ export class ProjectsComponent implements OnInit {
               if (task.due_on !== null) {
                 const due = moment(task.due_on).toDate();
                 due.setHours(0, 0, 0, 0);
-                if (moment(due).format('YYYY/MM/DD') === pstTime.format('YYYY/MM/DD')) {
+                if (moment(due).format('YYYY/MM/DD') <= pstTime.format('YYYY/MM/DD')) {
                   tasksCompletedSinceYesterday.push(task);
                 }
               }
@@ -121,11 +121,10 @@ export class ProjectsComponent implements OnInit {
       const taskCountShow = (d <= maxTaxDue) ? true : false;
 
       const dMoment = moment(d).format('YYYY/MM/DD');
+      taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
+      currentSum = taskCount.length + currentSum;
 
       if (dMoment >= pstTime.format('YYYY/MM/DD')) {
-        taskCount = taskAll.filter(task => (task.day === dateNow && task.month === monthNow && task.year === yearNow));
-        currentSum = taskCount.length + currentSum;
-
         calendarDays.push({
           day : dateNow.toString(),
           taskCount : currentSum,
