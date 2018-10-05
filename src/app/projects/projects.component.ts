@@ -97,14 +97,14 @@ export class ProjectsComponent implements OnInit {
   }
 
   prepareTaskCountByDate(taskAll, maxTaxDue) {
-    const maxDue = new Date(this.projects.maximumDue);
-    const minDue = new Date(this.projects.minimumDue);
+    const maxDue = moment(this.projects.maximumDue).toDate();
+    const minDue = moment(this.projects.minimumDue).toDate();
     maxDue.setHours(0, 0, 0, 0);
     minDue.setHours(0, 0, 0, 0);
 
     const today = new Date();
-    const minDueDate = new Date(minDue);
-    const threeMonths = new Date(minDueDate);
+    const minDueDate = moment(minDue).toDate();
+    const threeMonths = moment(minDueDate).toDate();
 
     const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
     const calendarDays = [];
@@ -138,16 +138,17 @@ export class ProjectsComponent implements OnInit {
 
   prepareDatesHeader() {
     this.calendarDays = [];
-    const maxDue = new Date(this.projects.maximumDue);
-    const minDue = new Date(this.projects.minimumDue);
+    const maxDue = moment(this.projects.maximumDue).toDate();
+    const minDue = moment(this.projects.minimumDue).toDate();
     maxDue.setHours(0, 0, 0, 0);
     minDue.setHours(0, 0, 0, 0);
 
     const today = new Date();
-    const minDueDate = new Date(minDue);
-    const threeMonths = new Date(minDueDate);
+    const minDueDate = moment(minDue).toDate();
+    const threeMonths = moment(minDueDate).toDate();
     threeMonths.setDate(minDueDate.getDate() + 90);
     const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days').format('YYYY/MM/DD');
+
     for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       const dMoment = moment(d).format('YYYY/MM/DD');
       const dateNow = d.getDate();

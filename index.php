@@ -43,7 +43,7 @@ $app->group('/api', function () use ($app) {
           if (is_null($minimunDue)) {
             $minimunDue = $task->due_on;
           } else {
-            if (($task->due_on < $minimunDue) && ($task->completed === false)) {
+            if ($task->due_on < $minimunDue) {
               $minimunDue = $task->due_on;
   
             }
@@ -52,7 +52,7 @@ $app->group('/api', function () use ($app) {
           if (is_null($maximumDue)) {
             $maximumDue = $task->due_on;
           } else {
-            if (($task->due_on > $maximumDue) && ($task->completed === false)) {
+            if ($task->due_on > $maximumDue) {
               $maximumDue = $task->due_on;
             }
           }
