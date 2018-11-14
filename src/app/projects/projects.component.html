@@ -11,7 +11,7 @@
     <tbody *ngIf="projects">
       <tr *ngFor='let project of projects.data'>
         <td class="no-wrap">{{ project.name }}</td>
-        <td><img src="{{ project.owner.photo.image_27x27 }}" alt=""></td>
+        <td><div *ngIf="project.owner.photo"><img src="{{ project.owner.photo.image_27x27 }}" alt=""></div></td>
         <td class="text-center">
           <span *ngIf="project.tasksCompleted" class="task-count alert" [ngClass]="{
             'alert-success': project.isComplete,
