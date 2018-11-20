@@ -29,3 +29,7 @@ table td.is-weekend {
 table tbody tr td {
   text-align: center;
 }
+
+table tbody tr td:first-child {
+  text-align: left;
+}
