@@ -44,6 +44,7 @@ export class ProjectsComponent implements OnInit {
       },
       () => {
         const allTasks = [];
+        console.log(this.projects.data);
         if (this.projects.hasOwnProperty('data')) {
           this.projects.data.forEach((project, index) => {
             const today = new Date();
@@ -60,13 +61,17 @@ export class ProjectsComponent implements OnInit {
                 if (d > maxTaskDue) {
                   maxTaskDue = d;
                 }
+                if (project.id === 909787607534448) {
+                  console.log(d);
+                  console.log(maxTaskDue);
+                }
               }
             });
             const tasksCompletedSinceYesterday = [];
 
             this.projects.data[index].maxTaskDue = maxTaskDue;
-            this.projects.data[index].tasksCompleted = project.tasks.data.filter(task => task.due_on !== null && task.completed === true);
-            this.projects.data[index].tasksIncomplete = project.tasks.data.filter(task => task.due_on !== null && task.completed === false);
+            this.projects.data[index].tasksCompleted = project.tasks.data.filter(task => task.completed === true);
+            this.projects.data[index].tasksIncomplete = project.tasks.data.filter(task => task.completed === false);
             this.projects.data[index].tasksAll = project.tasks.data;
 
             project.tasks.data.filter(task => {

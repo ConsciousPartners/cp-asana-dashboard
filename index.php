@@ -37,15 +37,31 @@ $app->group('/api', function () use ($app) {
     foreach($projects->data as $project) {
       $tasksResponse = $p->getTasksByProject($project);
       $tasks = json_decode($tasksResponse->getBody());
+      $tasks_array = $tasks->data;
+
+      $next_page = $tasks->next_page;
+
+      while (!is_null($next_page)) {
+        if (!is_null($tasks->next_page)) {
+          $nextTasksResponse = $p->getProjectsNextPage($tasks->next_page->uri);
+          $nextTasks = json_decode( $nextTasksResponse->getBody() );
   
-      foreach($tasks->data as $task) {
+          $tasks_array = array_merge($tasks_array, array_values($nextTasks->data));
+          $next_page = $nextTasks->next_page;
+        }
+      }
+
+      $tasks->next_page = $next_page;
+
+      $tasks->data = $tasks_array;
+
+      foreach($tasks->data as $key => $task) {
         if (property_exists($task, 'due_on') && !is_null($task->due_on)) {
           if (is_null($minimunDue)) {
             $minimunDue = $task->due_on;
           } else {
             if ($task->due_on < $minimunDue) {
               $minimunDue = $task->due_on;
-  
             }
           }
     

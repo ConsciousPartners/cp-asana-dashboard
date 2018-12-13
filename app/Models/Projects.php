@@ -26,6 +26,11 @@ class Projects {
     return $response;
   }
 
+  public function getProjectsNextPage($url) {
+    $response = $this->client->request('GET', $url);
+    return $response;
+  }
+
   public function getTasksByProject($project) {
     $response = $this->client->request('GET', 'projects/' . $project->id . '/tasks?opt_expand=completed,name,due_on,due_at&limit=100');
     return $response;
