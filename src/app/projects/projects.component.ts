@@ -102,9 +102,18 @@ export class ProjectsComponent implements OnInit {
 
     const today = new Date();
     const minDueDate = moment(minDue).toDate();
-    const threeMonths = moment(maxDue).toDate();
-
     const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
+
+    let defaultMax = pstTime;
+    defaultMax = moment(defaultMax).toDate();
+    defaultMax = moment(defaultMax).add('days', 90).toDate();
+
+    let threeMonths = moment(defaultMax).toDate();
+
+    if (maxDue > defaultMax) {
+      threeMonths = moment(maxDue).toDate();
+    }    
+
     const calendarDays = [];
     let currentSum = 0;
 
@@ -145,8 +154,17 @@ export class ProjectsComponent implements OnInit {
 
     const today = new Date();
     const minDueDate = moment(minDue).toDate();
-    const threeMonths = moment(maxDue).toDate();
-    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days').format('YYYY/MM/DD');
+    const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
+
+    let defaultMax = pstTime;
+    defaultMax = moment(defaultMax).toDate();
+    defaultMax = moment(defaultMax).add('days', 90).toDate();
+
+    let threeMonths = moment(defaultMax).toDate();
+
+    if (maxDue > defaultMax) {
+      threeMonths = moment(maxDue).toDate();
+    }
 
     for (const d = minDueDate; d <= threeMonths; d.setDate(d.getDate() + 1)) {
       const dMoment = moment(d).format('YYYY/MM/DD');
@@ -154,7 +172,7 @@ export class ProjectsComponent implements OnInit {
       const monthNow =  d.getMonth() + 1;
       const yearNow = d.getFullYear();
 
-      if (dMoment >= pstTime) {
+      if (dMoment >= pstTime.format('YYYY/MM/DD')) {
         this.calendarDays.push({ day : dateNow.toString() });
       }
     }
