@@ -42,15 +42,12 @@ $app->group('/api', function () use ($app) {
       $next_page = $tasks->next_page;
 
       while (!is_null($next_page)) {
-        if (!is_null($tasks->next_page)) {
-          $nextTasksResponse = $p->getProjectsNextPage($tasks->next_page->uri);
-          $nextTasks = json_decode( $nextTasksResponse->getBody() );
-  
-          $tasks_array = array_merge($tasks_array, array_values($nextTasks->data));
-          $next_page = $nextTasks->next_page;
-        }
-      }
+        $nextTasksResponse = $p->getProjectsNextPage($next_page->uri);
+        $nextTasks = json_decode( $nextTasksResponse->getBody() );
 
+        $tasks_array = array_merge($tasks_array, array_values($nextTasks->data));
+        $next_page = $nextTasks->next_page;
+      }
       $tasks->next_page = $next_page;
 
       $tasks->data = $tasks_array;
