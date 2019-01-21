@@ -101,6 +101,10 @@ export class ProjectsComponent implements OnInit {
     minDue.setHours(0, 0, 0, 0);
 
     const today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    today.setMilliseconds(0);
     const minDueDate = moment(minDue).toDate();
     const pstTime = momentTz.tz(today, 'America/Los_Angeles').subtract(1, 'days');
 
@@ -124,7 +128,11 @@ export class ProjectsComponent implements OnInit {
       const yearNow = d.getFullYear();
       let taskCount;
 
-      const taskCountShow = (d <= maxTaxDue) ? true : false;
+      let taskCountShow = (d <= maxTaxDue) ? true : false;
+
+      if (d <= today) {
+        taskCountShow = true;
+      }
 
       const dMoment = moment(d).format('YYYY/MM/DD');
       taskCount = taskAll.filter(task => (task.due_on !== null
