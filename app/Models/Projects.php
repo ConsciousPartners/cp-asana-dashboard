@@ -32,7 +32,7 @@ class Projects {
   }
 
   public function getTasksByProject($project) {
-    $response = $this->client->request('GET', 'projects/' . $project->id . '/tasks?opt_expand=completed,name,due_on,due_at&limit=100');
+    $response = $this->client->request('GET', 'projects/' . $project->id . '/tasks?opt_expand=tags,completed,name,due_on,due_at&limit=100');
     return $response;
   }
 }

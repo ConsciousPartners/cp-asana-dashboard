@@ -33,3 +33,11 @@ table tbody tr td {
 table tbody tr td:first-child {
   text-align: left;
 }
+
+.tag-toggle {
+  margin-bottom: 1.5em;
+}
+
+[hidden], template {
+  display: none!important;
+}
